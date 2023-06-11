@@ -598,16 +598,22 @@ export const navItems = [
     },
     {
       name: "Careers",
-      link: "/carrers"
+      link: "/careers"
     },
     {
       name: "Store Locations",
+      link: "/store-locations"
+
     },
     {
       name: "Our Blog",
+      link: "/blog"
+
     },
     {
       name: "Reviews",
+      link: "/reviews"
+
     },
   ];
   
