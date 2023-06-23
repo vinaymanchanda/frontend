@@ -1,20 +1,31 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, unstable_useBlocker } from "react-router-dom";
 import styles from "../../styles/styles";
 import { categoriesData, productData } from "../../static/data";
-import { AiOutlineHeart, AiOutlineSearch, AiOutlineShopping, AiOutlineShoppingCart } from "react-icons/ai";
+import {
+  AiOutlineHeart,
+  AiOutlineSearch,
+  AiOutlineShopping,
+  AiOutlineShoppingCart,
+} from "react-icons/ai";
 import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
 import { BiMenuAltLeft } from "react-icons/bi"; //why in bracket???
 import DropDown from "./DropDown.jsx";
 import Navbar from "./Navbar.jsx";
-import {CgProfile} from "react-icons/cg";
-
+import { CgProfile } from "react-icons/cg";
+import { useSelector } from "react-redux";
+import { backend_url } from "../../server";
+import Cart from "../cart/Cart.jsx";
+import Wishlist from "../Wishlist/Wishlist.jsx"
 
 const Header = (activeHeading) => {
+  const { isAuthenticated, user } = useSelector((state) => state.user);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchData, setSearchData] = useState(null);
   const [active, setActive] = useState(false);
   const [dropDown, setDropDown] = useState(false);
+  const [openCart, setOpenCart] = useState(false);
+  const [openWishlist, setOpenWishlist] = useState(false);
 
   const handleSearchChange = (e) => {
     const term = e.target.value;
@@ -38,7 +49,7 @@ const Header = (activeHeading) => {
   return (
     <>
       <div className={`${styles.section}`}>
-        <div className="hidden 800px:h-[50px] 800px:my-[20] 800px:flex items-center justify-between">
+        <div className="hidden 800px:h-[70px] 800px:my-[20] 800px:flex items-center justify-between">
           <div>
             <Link to="/">
               <img
@@ -101,7 +112,7 @@ const Header = (activeHeading) => {
           className={`${styles.section} relative ${styles.noramlFlex} justify-between`}
         >
           {/* categories */}
-          <div onClick={()=> setDropDown(!dropDown)}>
+          <div onClick={() => setDropDown(!dropDown)}>
             <div className="relative h-[60px] mt-[10px] w-[270px] hidden 1000px:block">
               <BiMenuAltLeft
                 size={30}
@@ -122,53 +133,65 @@ const Header = (activeHeading) => {
                   categoriesData={categoriesData}
                   setDropDown={setDropDown}
                 ></DropDown>
-              ) : null
-              }
+              ) : null}
             </div>
-           
           </div>
-           {/*nav items */}
-           <div className={`${styles.noramlFlex}`}>
-              <Navbar active={activeHeading} />
+          {/*nav items */}
+          <div className={`${styles.noramlFlex}`}>
+            <Navbar active={activeHeading} />
+          </div>
+          <div className="flex">
+            <div className={`${styles.noramlFlex}`}>
+              <div className="relative cursor-pointer mr-[15px]"
+              onClick={()=> setOpenWishlist(true)}>
+                <AiOutlineHeart size={30} className="rgb(255 25555 255 /83%)" />
+                <span className="absolute right-0 top-0 rounded-full bg-[#3bc177] w-4 h-4 top right p-0 m-0 tect-white font-mono text-[12px] leading-tight text-center">
+                  0
+                </span>
+              </div>
             </div>
-            <div className="flex">
-                <div className={`${styles.noramlFlex}`}>
-                    <div className="relative cursor-pointer mr-[15px]">
-                        <AiOutlineHeart
-                        size={30}
-                        className='rgb(255 25555 255 /83%)'
-                        />
-                        <span className="absolute right-0 top-0 rounded-full bg-[#3bc177] w-4 h-4 top right p-0 m-0 tect-white font-mono text-[12px] leading-tight text-center">
-                            0
-                        </span>
-                    </div>
-                </div>
-                <div className={`${styles.noramlFlex}`}>
-                    <div className="relative cursor-pointer mr-[15px]">
-                        <AiOutlineShoppingCart
-                        size={30}
-                        className='rgb(255 25555 255 /83%)'
-                        />
-                        <span className="absolute right-0 top-0 rounded-full bg-[#3bc177] w-4 h-4 top right p-0 m-0 tect-white font-mono text-[12px] leading-tight text-center">
-                            2
-                        </span>
-                    </div>
+            <div className={`${styles.noramlFlex}`}>
+              <div className="relative cursor-pointer mr-[15px]"
+              onClick={()=> setOpenCart(true)}>
+                <AiOutlineShoppingCart
+                  size={30}
+                  className="rgb(255 25555 255 /83%)"
+                />
+                <span className="absolute right-0 top-0 rounded-full bg-[#3bc177] w-4 h-4 top right p-0 m-0 tect-white font-mono text-[12px] leading-tight text-center">
+                  2
+                </span>
+              </div>
 
-                    <div className={`${styles.noramlFlex}`}>
-                    <div className="relative cursor-pointer mr-[15px]">
-                        <Link to="/login">
-                        <CgProfile
-                        size={30}
-                        className='rgb(255 25555 255 /83%)'
-                        />
-                        </Link>
-                    </div>
+              <div className={`${styles.noramlFlex}`}>
+                <div className="relative cursor-pointer mr-[15px]">
+                  {isAuthenticated ? (
+                    <Link to="/profile">
+                      <img src={`${backend_url}${user.avatar}`} alt="" />
+                    </Link>
+                  ) : (
+                    <Link to="/login">
+                      <CgProfile size={30} color="rgb(255 255 255/83%)" />
+                    </Link>
+                  )}
                 </div>
+              </div>
 
-                </div>
-            
-            
+              {/**cart popup */}
+              {
+                openCart ? (
+                  <Cart setOpenCart={setOpenCart}/>
+                ): null
+              }
+
+              {/**wishlist popup */}
+              {
+                openWishlist ? (
+                  <Wishlist setOpenWishlist={setOpenWishlist}/>
+                ): null
+              }
+
             </div>
+          </div>
         </div>
       </div>
     </>

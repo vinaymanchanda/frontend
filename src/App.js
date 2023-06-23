@@ -1,7 +1,8 @@
 import React,{useEffect} from "react";
 import "./App.css";
 import { BrowserRouter,Routes, Route } from "react-router-dom";
-import {LoginPage,SignupPage,ActivationPage, HomePage, ProductsPage, BestSellingPage, EventsPage, FAQPage} from "./Routes.js";
+import {LoginPage,SignupPage,ActivationPage, HomePage, ProductsPage, BestSellingPage, EventsPage, FAQPage,ProductDetailsPage,OrderSuccessPage
+,CheckoutPage,PaymentPage,ProfilePage} from "./Routes.js";
 import axios from "axios";
 import { server } from "./server";
 import 'react-toastify/dist/ReactToastify.css';
@@ -27,9 +28,14 @@ return(
     <Route path='/sign-up' element={<SignupPage/>} />
     <Route path='/Activation/:url' element={<ActivationPage/>} />
     <Route path='/products' element={<ProductsPage/>} />
+    <Route path='/product/:name' element={<ProductDetailsPage/>} />
     <Route path='/best-selling' element={<BestSellingPage/>} />
     <Route path='/events' element={<EventsPage/>} />
     <Route path='/faq' element={<FAQPage/>} />
+    <Route path="/order/success/:id" element={<OrderSuccessPage/>}/>
+    <Route path="/checkout" element={<CheckoutPage/>}/>
+    <Route path="/payment" element={<PaymentPage/>}/>
+    <Route path="/profile" element={<ProfilePage/>}/>
 
 
   </Routes>
